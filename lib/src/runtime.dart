@@ -1,18 +1,18 @@
 import 'types.dart' show MetadataEnum, MetadataV12;
 
-class RuntimeConfigration {
-  factory RuntimeConfigration() =>_getInstance();
+class RuntimeConfiguration {
+  factory RuntimeConfiguration() =>_getInstance();
 
   MetadataEnum _runtimeMetadata;
-  static RuntimeConfigration _instance;
-  static RuntimeConfigration _getInstance() {
+  static RuntimeConfiguration _instance;
+  static RuntimeConfiguration _getInstance() {
     if (_instance == null) {
-      _instance = new RuntimeConfigration._internal();
+      _instance = new RuntimeConfiguration._internal();
     }
     return _instance;
   }
 
-  RuntimeConfigration._internal();
+  RuntimeConfiguration._internal();
 
 
   registMetadata(MetadataEnum metadata) {

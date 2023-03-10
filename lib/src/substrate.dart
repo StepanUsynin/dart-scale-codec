@@ -1,16 +1,25 @@
 part of 'types.dart';
 
 class StorageHasher extends u8 {
-  static const List<String> hasher_functions = 
-  ['Blake2_128', 'Blake2_256', 'Blake2_128Concat', 'Twox128', 'Twox256', 'Twox64Concat', 'Identity'];
+  static const List<String> hasher_functions = [
+    'Blake2_128',
+    'Blake2_256',
+    'Blake2_128Concat',
+    'Twox128',
+    'Twox256',
+    'Twox64Concat',
+    'Identity'
+  ];
+
   dynamic toJson() => hasher_functions[val];
-  StorageHasher.fromJson(dynamic s):super(-1) {
+
+  StorageHasher.fromJson(dynamic s) : super(-1) {
     var idx = hasher_functions.indexOf(s as String);
-    if(idx < 0)
-      throw Exception("invalid value of StorageHasher");
+    if (idx < 0) throw Exception("invalid value of StorageHasher");
     val = idx;
   }
-  StorageHasher.fromBinary():super.fromBinary();
+
+  StorageHasher.fromBinary() : super.fromBinary();
 }
 
 // class PlainType extends Str {
@@ -25,8 +34,10 @@ class MapType extends GeneralStruct {
     Tuple2('value', 'Str'),
     Tuple2('isLinked', 'Bool')
   ];
-  MapType.fromBinary():super.fromBinary();
-  MapType.fromJson(Map<String, dynamic> s):super.fromJson(s);
+
+  MapType.fromBinary() : super.fromBinary();
+
+  MapType.fromJson(Map<String, dynamic> s) : super.fromJson(s);
 }
 
 class DoubleMapType extends GeneralStruct {
@@ -37,8 +48,10 @@ class DoubleMapType extends GeneralStruct {
     Tuple2('value', 'Bytes'),
     Tuple2('key2Hasher', 'StorageHasher')
   ];
-  DoubleMapType.fromBinary():super.fromBinary();
-  DoubleMapType.fromJson(Map<String, dynamic> s):super.fromJson(s);
+
+  DoubleMapType.fromBinary() : super.fromBinary();
+
+  DoubleMapType.fromJson(Map<String, dynamic> s) : super.fromJson(s);
 }
 
 class Address extends ScaleCodecBase {
@@ -58,40 +71,40 @@ class Address extends ScaleCodecBase {
   }
 
   dynamic toJson() => base58CheckEncode(address, 0);
-  
+
   // base58.encode(checkEncodedAddress);
 
   Address.fromBinary() {
     address = getReaderInstance().read(32);
   }
 
-  Address.fromJson(String s) {
-    address = base58CheckDecode(s);
+  static Future<Address> fromJson(String s) async {
+    return Address(await base58CheckDecode(s));
   }
 }
 
 /// An Era represents a range of blocks in which a transaction is allowed to be
 /// executed.
-/// 
-/// An Era may either be "immortal", in which case the transaction is always 
+///
+/// An Era may either be "immortal", in which case the transaction is always
 /// valid, or "mortal", in which case the transaction has a defined start block
 /// and period in which it is valid.
-class Era extends  ScaleCodecBase {
+class Era extends ScaleCodecBase {
   int firstByte;
   int secondByte;
 
   /// Override constructor of [GeneralStruct]
-  /// Two fields of Era are not always presented 
-  Era.fromBinary(){
+  /// Two fields of Era are not always presented
+  Era.fromBinary() {
     firstByte = (fromBinary('u8') as u8).val;
-    if(firstByte != 0) {
+    if (firstByte != 0) {
       secondByte = (fromBinary('u8') as u8).val;
     }
   }
 
   void objToBinary() {
     u8(firstByte).objToBinary();
-    if(firstByte != 0) {
+    if (firstByte != 0) {
       u8(secondByte).objToBinary();
     }
   }
@@ -99,7 +112,7 @@ class Era extends  ScaleCodecBase {
   int get encoded => firstByte | (secondByte << 8);
 
   int get period {
-    if(firstByte == 0) {
+    if (firstByte == 0) {
       return null;
     }
     int _period = 2 << (firstByte & 0xf);
@@ -108,7 +121,7 @@ class Era extends  ScaleCodecBase {
   }
 
   int get phase {
-    if(firstByte == 0) {
+    if (firstByte == 0) {
       return null;
     }
     int factor = max(1, period >> 12);
@@ -120,8 +133,8 @@ class Era extends  ScaleCodecBase {
   dynamic toJson() => {'period': period, 'phase': phase};
 
   Era.fromJson(Map<String, dynamic> s) {
-    if(s['period'] == null || s['phase'] == null) {
-      if(s['period'] != null || s['phase'] != null)
+    if (s['period'] == null || s['phase'] == null) {
+      if (s['period'] != null || s['phase'] != null)
         throw Exception("period and phase must be both (or both not) be null");
       firstByte = 0;
       secondByte = 0;
@@ -142,8 +155,9 @@ class IdentityInfoAdditional extends GeneralStruct {
     Tuple2('value', 'Data')
   ];
 
-  IdentityInfoAdditional.fromBinary():super.fromBinary();
-  IdentityInfoAdditional.fromJson(Map<String, dynamic> s):super.fromJson(s);
+  IdentityInfoAdditional.fromBinary() : super.fromBinary();
+
+  IdentityInfoAdditional.fromJson(Map<String, dynamic> s) : super.fromJson(s);
 }
 
 class IdentityInfo extends GeneralStruct {
@@ -158,6 +172,8 @@ class IdentityInfo extends GeneralStruct {
     Tuple2('image', 'Data'),
     Tuple2('twitter', 'Data')
   ];
-  IdentityInfo.fromBinary():super.fromBinary();
-  IdentityInfo.fromJson(Map<String, dynamic> s):super.fromJson(s);
+
+  IdentityInfo.fromBinary() : super.fromBinary();
+
+  IdentityInfo.fromJson(Map<String, dynamic> s) : super.fromJson(s);
 }

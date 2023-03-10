@@ -10,5 +10,5 @@ void initRuntimeMetadata() {
   createReaderInstance(hex_str);
   getReaderInstance().read(4);//skip magic
   dynamic metadata = fromBinary('MetadataEnum');
-  RuntimeConfigration().registMetadata(metadata);
+  RuntimeConfiguration().registMetadata(metadata);
 }

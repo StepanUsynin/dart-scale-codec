@@ -9,7 +9,7 @@ import 'runtime.dart';
 void main() async {
   initializeReflectable();
   var metadata = await getMetadata('wss://cc1-1.polkadot.network/');
-  RuntimeConfigration().registMetadata(metadata);
+  RuntimeConfiguration().registMetadata(metadata);
 
   Map<String, dynamic> extrinsicsJson = {
     'era': {
